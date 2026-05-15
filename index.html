@@ -4,124 +4,218 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mittens - Roblox UI Framework</title>
+    
+    <!-- Fonts: Outfit for UI, JetBrains Mono for Code -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         :root {
-            --bg-color: #121212;
-            --container-bg: #1e1e24;
-            --text-main: #f5f5f5;
-            --text-muted: #a0a0a0;
-            --accent: #6c5ce7;
-            --accent-hover: #5b4bc4;
-            --code-bg: #282a36;
+            /* Cyan & Blue Theme */
+            --bg-deep: #050b14;
+            --surface-color: #0b1426;
+            --surface-highlight: #122240;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --cyan: #00f2fe;
+            --blue: #4facfe;
+            --glow: rgba(0, 242, 254, 0.2);
+            --code-bg: #03070c;
+            --border-accent: rgba(79, 172, 254, 0.3);
+            
+            /* Luau Syntax Colors */
+            --sy-keyword: #ff4a70; /* Red */
+            --sy-string: #a3be8c;  /* Green */
+            --sy-func: #61afef;    /* Light Blue */
+            --sy-comment: #5c6370; /* Grey */
+            --sy-number: #d19a66;  /* Orange */
+            --sy-operator: #56b6c2;/* Cyan */
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Outfit', sans-serif;
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: var(--bg-deep);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 242, 254, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(79, 172, 254, 0.05) 0%, transparent 50%);
             color: var(--text-main);
-            line-height: 1.6;
-            padding: 2rem;
+            line-height: 1.7;
+            padding: 3rem 1rem;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 850px;
             margin: 0 auto;
-            background-color: var(--container-bg);
-            padding: 2.5rem;
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            background: var(--surface-color);
+            padding: 3rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-accent);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4), 0 0 20px var(--glow);
         }
 
         h1 {
-            font-size: 2.5rem;
-            color: var(--accent);
-            margin-bottom: 0.2rem;
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
         h2 {
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-            border-bottom: 1px solid #333;
-            padding-bottom: 0.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1.2rem;
+            font-size: 1.6rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--surface-highlight);
+            padding-bottom: 0.8rem;
+        }
+
+        h2 i {
+            color: var(--cyan);
         }
 
         .subtitle {
             font-size: 1.2rem;
             color: var(--text-muted);
             margin-bottom: 2rem;
+            font-weight: 300;
         }
 
         .features-list {
             list-style-type: none;
-            margin-bottom: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2.5rem;
         }
 
         .features-list li {
-            background: rgba(108, 92, 231, 0.1);
-            margin-bottom: 0.5rem;
-            padding: 0.8rem 1rem;
-            border-left: 4px solid var(--accent);
-            border-radius: 4px;
+            background: var(--surface-highlight);
+            padding: 1rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 3px solid var(--blue);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        a {
-            color: var(--accent);
+        .features-list li:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px var(--glow);
+        }
+
+        .features-list i {
+            color: var(--cyan);
+        }
+
+        a.changelog-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--blue), var(--cyan));
+            color: #000;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
             text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s ease;
         }
 
-        a:hover {
-            text-decoration: underline;
+        a.changelog-btn:hover {
+            box-shadow: 0 0 15px var(--glow);
+            transform: scale(1.02);
         }
+
+        /* Syntax Highlighting Classes */
+        .kw { color: var(--sy-keyword); font-weight: bold; } /* Keyword */
+        .st { color: var(--sy-string); } /* String */
+        .fn { color: var(--sy-func); } /* Function/Service */
+        .cm { color: var(--sy-comment); font-style: italic; } /* Comment */
+        .nu { color: var(--sy-number); } /* Number */
+        .op { color: var(--sy-operator); } /* Operator */
 
         /* Code Block Styling */
         .code-container {
             position: relative;
             background-color: var(--code-bg);
-            border-radius: 8px;
-            padding: 1rem;
+            border: 1px solid var(--border-accent);
+            border-radius: 12px;
+            padding: 1.5rem;
             margin: 1.5rem 0;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
+        }
+
+        .code-container::before {
+            content: "LUA";
+            position: absolute;
+            top: 0;
+            left: 1.5rem;
+            background: var(--surface-highlight);
+            padding: 0.2rem 0.8rem;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: var(--cyan);
+            border-radius: 0 0 6px 6px;
+            letter-spacing: 1px;
         }
 
         .code-container:hover {
-            transform: scale(1.01);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            border-color: var(--cyan);
+            box-shadow: 0 8px 30px rgba(0, 242, 254, 0.15);
         }
 
         pre {
             overflow-x: auto;
-            color: #f8f8f2;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.95rem;
+            line-height: 1.5;
+            color: #abb2bf; /* default code color */
         }
 
         .copy-btn {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: var(--accent);
-            color: white;
-            border: none;
-            padding: 5px 12px;
-            border-radius: 4px;
+            top: 15px;
+            right: 15px;
+            background: var(--surface-highlight);
+            color: var(--cyan);
+            border: 1px solid var(--border-accent);
+            padding: 6px 14px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 0.85rem;
+            font-weight: 700;
             z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
         }
 
         .copy-btn:hover {
-            background-color: var(--accent-hover);
+            background: var(--cyan);
+            color: #000;
         }
 
-        /* Modal / Pop-up Styling */
+        /* Modal / Pop-up Styling (Blur background) */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -129,70 +223,97 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
+            background: rgba(3, 7, 18, 0.7);
+            backdrop-filter: blur(12px); /* Heavy Blur */
             z-index: 1000;
             justify-content: center;
             align-items: center;
+            opacity: 0;
+            animation: fadeIn 0.3s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
         }
 
         .modal-content {
             background-color: var(--code-bg);
-            padding: 2rem;
+            padding: 2.5rem;
             border-radius: 12px;
+            border: 1px solid var(--cyan);
+            box-shadow: 0 20px 60px rgba(0, 242, 254, 0.2);
             max-width: 90%;
             max-height: 90%;
             overflow: auto;
             position: relative;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
         }
 
         .modal-close {
             position: absolute;
-            top: 10px;
-            right: 15px;
-            color: white;
-            font-size: 1.5rem;
+            top: 15px;
+            right: 20px;
+            color: var(--text-muted);
+            font-size: 1.8rem;
             cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: var(--cyan);
         }
 
         /* Comments Section Styling */
         .comments-section {
-            margin-top: 3rem;
-            background: #17171c;
-            padding: 2rem;
-            border-radius: 8px;
+            margin-top: 4rem;
+            background: var(--surface-highlight);
+            padding: 2.5rem;
+            border-radius: 12px;
+            border-top: 3px solid var(--blue);
         }
 
         .comment-box {
             display: flex;
-            gap: 10px;
-            margin-bottom: 2rem;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 2.5rem;
         }
 
         textarea {
-            flex-grow: 1;
-            background: #25252b;
-            border: 1px solid #333;
-            color: white;
-            padding: 10px;
-            border-radius: 6px;
+            width: 100%;
+            background: var(--code-bg);
+            border: 1px solid var(--border-accent);
+            color: var(--text-main);
+            padding: 15px;
+            border-radius: 8px;
             resize: vertical;
-            min-height: 50px;
+            min-height: 80px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--cyan);
         }
 
         .submit-btn {
-            background-color: var(--accent);
-            color: white;
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--blue), var(--cyan));
+            color: #000;
             border: none;
-            padding: 0 20px;
+            padding: 10px 24px;
             border-radius: 6px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
         .submit-btn:hover {
-            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px var(--glow);
         }
 
         .comment-list {
@@ -202,79 +323,114 @@
         }
 
         .comment {
-            background: #25252b;
-            padding: 15px;
-            border-radius: 6px;
-            border-left: 3px solid #555;
+            background: var(--surface-color);
+            padding: 18px;
+            border-radius: 8px;
+            border-left: 4px solid var(--cyan);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
         }
 
         .comment-author {
-            font-weight: bold;
-            color: var(--accent);
-            margin-bottom: 5px;
+            font-weight: 700;
+            color: var(--text-main);
+            font-size: 1rem;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: var(--surface-highlight);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--cyan);
             font-size: 0.9rem;
         }
 
         .comment-text {
+            color: var(--text-muted);
             word-wrap: break-word;
+            line-height: 1.5;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>#Mittens</h1>
-        <p class="subtitle">A UI Framework in roblox</p>
+        <h1><i class="fa-solid fa-mitten"></i> Mittens</h1>
+        <p class="subtitle">A next-generation UI Framework for Roblox.</p>
 
         <ul class="features-list">
-            <li>The first version of Mittens</li>
-            <li>Frame Support</li>
-            <li>Button Support</li>
-            <li>Text Support</li>
-            <li>Aspect Ratio Support</li>
-            <li>List Layout Support</li>
+            <li><i class="fa-solid fa-code-branch"></i> The first version of Mittens</li>
+            <li><i class="fa-regular fa-square"></i> Frame Support</li>
+            <li><i class="fa-solid fa-computer-mouse"></i> Button Support</li>
+            <li><i class="fa-solid fa-font"></i> Text Support</li>
+            <li><i class="fa-solid fa-expand"></i> Aspect Ratio Support</li>
+            <li><i class="fa-solid fa-list-ul"></i> List Layout Support</li>
         </ul>
 
-        <p><strong>Full Changelog:</strong> <a href="https://github.com/datashe192/Mittens/commits/0.1.0" target="_blank">View on GitHub</a></p>
+        <a href="https://github.com/datashe192/Mittens/commits/0.1.0" target="_blank" class="changelog-btn">
+            <i class="fa-brands fa-github"></i> Full Changelog
+        </a>
 
-        <h2>Example Script:</h2>
+        <h2><i class="fa-solid fa-terminal"></i> Example Script</h2>
         
-        <!-- Code Block -->
+        <!-- Code Block with Luau Syntax Highlighting via spans -->
         <div class="code-container" onclick="openModal()">
-            <button class="copy-btn" onclick="copyCode(event)">Copy</button>
+            <button class="copy-btn" onclick="copyCode(event)">
+                <i class="fa-regular fa-copy"></i> Copy
+            </button>
             <pre id="lua-code">
--- EXAMPLE SCRIPT
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Players = game:GetService("Players")
-local lib = require(PATH.TO.MITTENS) -- Put your path to mittens here!
-local Mittens = lib :: any
-local Screen = Instance.new("ScreenGui")
-Screen.IgnoreGuiInset = true
-Screen.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
+<span class="cm">-- EXAMPLE SCRIPT</span>
+<span class="kw">local</span> ReplicatedStorage <span class="op">=</span> <span class="fn">game</span><span class="op">:</span><span class="fn">GetService</span>(<span class="st">"ReplicatedStorage"</span>)
+<span class="kw">local</span> Players <span class="op">=</span> <span class="fn">game</span><span class="op">:</span><span class="fn">GetService</span>(<span class="st">"Players"</span>)
+<span class="kw">local</span> lib <span class="op">=</span> <span class="kw">require</span>(PATH.TO.MITTENS) <span class="cm">-- Put your path to mittens here!</span>
+<span class="kw">local</span> Mittens <span class="op">=</span> lib <span class="op">::</span> <span class="kw">any</span>
 
--- 3. Build your UI
-local label = Mittens.Label {
-    Transparency = 1,
-    Position = {0.5, 0.5},
-    AnchorPoint = {0.5, 0.5},
-    Size = {0.5, 0.2},
-    Color = Color3.fromRGB(255, 255, 255),
-    Text = "It Works!"
-} (nil) -- You Pass nil here and not Screen.Ptr because its not inside any of Mittens's UI Elements, if you want to Parent it inside a frame pass Frame.Ptr
+<span class="kw">local</span> Screen <span class="op">=</span> <span class="fn">Instance</span>.<span class="fn">new</span>(<span class="st">"ScreenGui"</span>)
+Screen.IgnoreGuiInset <span class="op">=</span> <span class="kw">true</span>
+Screen.Parent <span class="op">=</span> Players.LocalPlayer<span class="op">:</span><span class="fn">WaitForChild</span>(<span class="st">"PlayerGui"</span>)
+
+<span class="cm">-- 3. Build your UI</span>
+<span class="kw">local</span> label <span class="op">=</span> Mittens.Label {
+    Transparency <span class="op">=</span> <span class="nu">1</span>,
+    Position <span class="op">=</span> {<span class="nu">0.5</span>, <span class="nu">0.5</span>},
+    AnchorPoint <span class="op">=</span> {<span class="nu">0.5</span>, <span class="nu">0.5</span>},
+    Size <span class="op">=</span> {<span class="nu">0.5</span>, <span class="nu">0.2</span>},
+    Color <span class="op">=</span> <span class="fn">Color3</span>.<span class="fn">fromRGB</span>(<span class="nu">255</span>, <span class="nu">255</span>, <span class="nu">255</span>),
+    Text <span class="op">=</span> <span class="st">"It Works!"</span>
+} (<span class="kw">nil</span>) <span class="cm">-- Pass nil here and not Screen.Ptr because it's not inside any Mittens UI Elements</span>
 
 lib.MountToScreen(label, Screen)
             </pre>
         </div>
 
-        <h2>#Short History of Mittens</h2>
-        <p>So mittens was supposed to be a Leaderstat system for the players in the Current Server, Basically the same as the roblox lederboard. But then an idea popped up in my head and i decided it was supposed to be a UI Framework.</p>
+        <h2><i class="fa-solid fa-book-open"></i> Short History of Mittens</h2>
+        <p style="color: var(--text-muted);">
+            So mittens was supposed to be a Leaderstat system for the players in the Current Server, Basically the same as the roblox lederboard. But then an idea popped up in my head and i decided it was supposed to be a UI Framework.
+        </p>
 
         <!-- Comments Section -->
         <div class="comments-section">
-            <h2>Comments</h2>
+            <h2><i class="fa-regular fa-comments"></i> Community Discussion</h2>
             <div class="comment-box">
-                <textarea id="comment-input" placeholder="Join the discussion..."></textarea>
-                <button class="submit-btn" onclick="postComment()">Post</button>
+                <textarea id="comment-input" placeholder="What are your thoughts on Mittens?"></textarea>
+                <button class="submit-btn" onclick="postComment()">
+                    <i class="fa-solid fa-paper-plane"></i> Post Comment
+                </button>
             </div>
             <div class="comment-list" id="comment-list">
                 <!-- Comments generate here via JS -->
@@ -293,20 +449,25 @@ lib.MountToScreen(label, Screen)
     <script>
         // --- COPY BUTTON LOGIC ---
         function copyCode(event) {
-            event.stopPropagation(); // Prevents the modal from opening when clicking copy
-            const codeText = document.getElementById("lua-code").innerText;
+            event.stopPropagation(); // Prevents modal from opening when clicking copy
+            
+            // Use textContent to get plain text, ignoring the formatting spans!
+            const codeText = document.getElementById("lua-code").textContent;
+            
             navigator.clipboard.writeText(codeText).then(() => {
-                const btn = event.target;
-                btn.innerText = "Copied!";
-                setTimeout(() => btn.innerText = "Copy", 2000);
+                const btn = event.currentTarget;
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+                setTimeout(() => btn.innerHTML = originalHTML, 2000);
             });
         }
 
         // --- MODAL POPUP LOGIC ---
         const modal = document.getElementById("code-modal");
         function openModal() {
-            const codeText = document.getElementById("lua-code").innerText;
-            document.getElementById("modal-lua-code").innerText = codeText;
+            // Use innerHTML to keep the exact Luau syntax highlighting colors in the popup
+            const codeHTML = document.getElementById("lua-code").innerHTML;
+            document.getElementById("modal-lua-code").innerHTML = codeHTML;
             modal.style.display = "flex";
         }
 
@@ -314,11 +475,11 @@ lib.MountToScreen(label, Screen)
             modal.style.display = "none";
         }
 
-        // --- COMMENTS SYSTEM (USING LOCALSTORAGE) ---
+        // --- COMMENTS SYSTEM (LOCALSTORAGE - NO BACKEND REQUIRED) ---
         const commentInput = document.getElementById("comment-input");
         const commentList = document.getElementById("comment-list");
 
-        // Basic HTML escaping to prevent UI breaking from weird inputs
+        // Escape HTML to prevent fake comments / malicious inputs
         function escapeHTML(str) {
             return str.replace(/[&<>'"]/g, 
                 tag => ({
@@ -332,20 +493,23 @@ lib.MountToScreen(label, Screen)
         }
 
         function loadComments() {
-            // Load from browser storage, default to empty array if none exist
             const savedComments = JSON.parse(localStorage.getItem("mittens_comments") || "[]");
             commentList.innerHTML = "";
             
             if (savedComments.length === 0) {
-                commentList.innerHTML = "<p style='color: #777; font-style: italic;'>No comments yet. Be the first!</p>";
+                commentList.innerHTML = "<p style='color: var(--text-muted); font-style: italic;'><i class='fa-solid fa-ghost'></i> No comments yet. Be the first to share your thoughts!</p>";
                 return;
             }
 
-            savedComments.forEach(comment => {
+            // Load newest comments first
+            savedComments.slice().reverse().forEach(comment => {
                 const commentDiv = document.createElement("div");
                 commentDiv.className = "comment";
                 commentDiv.innerHTML = `
-                    <div class="comment-author">Annonymus</div>
+                    <div class="comment-header">
+                        <div class="user-avatar"><i class="fa-solid fa-user-secret"></i></div>
+                        <div class="comment-author">Annonymus</div>
+                    </div>
                     <div class="comment-text">${escapeHTML(comment.text)}</div>
                 `;
                 commentList.appendChild(commentDiv);
@@ -354,19 +518,18 @@ lib.MountToScreen(label, Screen)
 
         function postComment() {
             const text = commentInput.value.trim();
-            if (!text) return; // Don't post empty strings
+            if (!text) return; 
 
             const savedComments = JSON.parse(localStorage.getItem("mittens_comments") || "[]");
             savedComments.push({ text: text });
             
-            // Save back to browser storage
             localStorage.setItem("mittens_comments", JSON.stringify(savedComments));
             
-            commentInput.value = ""; // Clear box
-            loadComments(); // Refresh UI
+            commentInput.value = ""; 
+            loadComments(); 
         }
 
-        // Load comments immediately when the page starts
+        // Initialize comments
         loadComments();
     </script>
 
