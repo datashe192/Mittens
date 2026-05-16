@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mittens - Components Structure</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            /* Heavenly Dark Theme */
+            --bg-base: #02040a;
+            --glass-bg: rgba(255, 255, 255, 0.015);
+            --glass-border: rgba(255, 255, 255, 0.05);
+            
+            --text-main: #f8fafc;
+            --text-muted: #8b9bb4;
+            
+            --cyan: #38bdf8;
+            --cyan-glow: rgba(56, 189, 248, 0.25);
+            --purple: #c084fc;
+            --purple-glow: rgba(192, 132, 252, 0.25);
+            --yellow: #facc15;
+            
+            /* Syntax Colors */
+            --sy-kw: #ff7b72;     
+            --sy-str: #a5d6ff;    
+            --sy-fn: #d2a8ff;     
+            --sy-class: #79c0ff;  
+            --sy-comment: #8b949e;
+            --sy-num: #f2cc60;    
+            --sy-op: #c9d1d9;     
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            background-color: var(--bg-base); color: var(--text-main);
+            line-height: 1.6; overflow-x: hidden; min-height: 100vh;
+        }
+
+        /* --- Scrollbar --- */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--cyan); }
+
+        /* --- Heavenly Background Effects --- */
+        body::before {
+            content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 64px 64px; z-index: -3;
+            mask-image: radial-gradient(circle at 50% 30%, black, transparent 80%);
+            -webkit-mask-image: radial-gradient(circle at 50% 30%, black, transparent 80%);
+        }
+
+        .nebula {
+            position: fixed; border-radius: 50%; filter: blur(140px); z-index: -2;
+            opacity: 0.4; pointer-events: none; animation: breathe 15s infinite alternate ease-in-out;
+        }
+        .nebula-1 { top: -20%; left: -10%; width: 60vw; height: 60vh; background: var(--cyan-glow); }
+        .nebula-2 { bottom: -20%; right: -10%; width: 50vw; height: 50vh; background: var(--purple-glow); animation-delay: -7s; }
+
+        @keyframes breathe {
+            0% { transform: scale(1) translate(0, 0); }
+            100% { transform: scale(1.1) translate(30px, -30px); }
+        }
+
+        /* --- Navigation --- */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1.5rem 5rem; background: rgba(2, 4, 10, 0.7);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--glass-border); position: sticky; top: 0; z-index: 100;
+        }
+
+        .nav-logo {
+            display: flex; align-items: center; gap: 12px; font-size: 1.4rem; 
+            font-weight: 800; color: #fff; letter-spacing: -0.5px; text-decoration: none;
+        }
+        .nav-logo i { color: var(--cyan); filter: drop-shadow(0 0 10px var(--cyan-glow)); }
+
+        .nav-links { display: flex; gap: 2.5rem; }
+        .nav-links a {
+            color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 500;
+            transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;
+        }
+        .nav-links a.active { color: var(--cyan); text-shadow: 0 0 15px var(--cyan-glow); }
+        .nav-links a:hover { color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.6); }
+
+        /* --- Page Header --- */
+        .header-container { max-width: 1000px; margin: 4rem auto 2rem auto; text-align: center; padding: 0 2rem; }
+        h1 {
+            font-size: 3.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 1rem;
+            background: linear-gradient(135deg, #38bdf8 0%, #c084fc 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: -1.5px; filter: drop-shadow(0 10px 20px rgba(56, 189, 248, 0.15));
+        }
+        .subtitle { font-size: 1.1rem; color: var(--text-muted); font-weight: 300; }
+
+        /* --- Component Explorer (File Tree) --- */
+        .explorer-container {
+            max-width: 800px; margin: 0 auto 6rem auto; padding: 2rem;
+            background: rgba(9, 11, 17, 0.6); border: 1px solid var(--glass-border);
+            border-radius: 16px; backdrop-filter: blur(20px); box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .explorer-header {
+            font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;
+            letter-spacing: 1px; margin-bottom: 1rem; padding-bottom: 1rem;
+            border-bottom: 1px solid var(--glass-border); display: flex; align-items: center; gap: 10px;
+        }
+
+        .tree-node { font-family: 'Inter', sans-serif; font-size: 1rem; }
+        
+        .tree-item {
+            display: flex; align-items: center; gap: 10px; padding: 8px 12px;
+            border-radius: 6px; cursor: pointer; transition: all 0.2s; color: #cbd5e1;
+            user-select: none;
+        }
+        .tree-item:hover { background: rgba(255, 255, 255, 0.05); color: #fff; }
+        .tree-item.script:hover { background: rgba(56, 189, 248, 0.1); color: var(--cyan); }
+        
+        .tree-children {
+            margin-left: 22px; padding-left: 10px;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .icon-lua { color: #51a0ff; }
+        .icon-folder { color: var(--yellow); }
+
+        /* --- Modal (Scriptbox) --- */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(2, 4, 10, 0.7);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            z-index: 1000; align-items: center; justify-content: center;
+            opacity: 0; animation: fadeIn 0.3s forwards;
+        }
+
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        .modal-window {
+            background: rgba(13, 17, 23, 0.95); border: 1px solid var(--glass-border);
+            border-radius: 16px; box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 0 1px rgba(56, 189, 248, 0.2);
+            width: 90%; max-width: 1000px; max-height: 85vh; display: flex; flex-direction: column;
+            transform: scale(0.95); animation: scaleUp 0.3s forwards cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes scaleUp { to { transform: scale(1); } }
+
+        .modal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 20px; border-bottom: 1px solid var(--glass-border);
+            background: rgba(0,0,0,0.2); border-radius: 16px 16px 0 0;
+        }
+
+        .modal-title { display: flex; align-items: center; gap: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #fff; }
+        
+        .modal-close {
+            background: transparent; border: none; color: var(--text-muted);
+            font-size: 1.2rem; cursor: pointer; transition: all 0.2s;
+            width: 30px; height: 30px; border-radius: 6px; display: flex; align-items: center; justify-content: center;
+        }
+        .modal-close:hover { background: #ef4444; color: #fff; }
+
+        .modal-body {
+            padding: 1.5rem; overflow-y: auto; flex-grow: 1; position: relative;
+        }
+
+        .copy-btn {
+            position: absolute; top: 15px; right: 15px; z-index: 10;
+            background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+            color: var(--text-main); padding: 6px 14px; border-radius: 6px; font-size: 0.8rem;
+            cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 6px;
+        }
+        .copy-btn:hover { background: var(--cyan); color: #000; border-color: var(--cyan); box-shadow: 0 0 15px var(--cyan-glow); }
+
+        pre { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #c9d1d9; line-height: 1.6; }
+        
+        .line { display: block; white-space: pre; }
+        .line::before {
+            content: attr(data-line); display: inline-block; width: 2.5em; margin-right: 1.5em;
+            color: rgba(255,255,255,0.15); text-align: right; user-select: none;
+            border-right: 1px solid rgba(255,255,255,0.05); padding-right: 1em;
+        }
+
+        .kw { color: var(--sy-kw); font-weight: 500; } 
+        .str { color: var(--sy-str); } 
+        .fn { color: var(--sy-fn); } 
+        .cls { color: var(--sy-class); } 
+        .cm { color: var(--sy-comment); font-style: italic; } 
+        .num { color: var(--sy-num); }
+        .op { color: var(--sy-op); }
+    </style>
+</head>
+<body>
+
+    <div class="nebula nebula-1"></div>
+    <div class="nebula nebula-2"></div>
+
+    <nav>
+        <a href="https://datashe192.github.io/Mittens/" class="nav-logo"><i class="fa-brands fa-space-awesome"></i> Mittens</a>
+        <div class="nav-links">
+            <a href="https://datashe192.github.io/Mittens/">Documentation</a>
+            <a href="#" class="active"><i class="fa-solid fa-layer-group"></i> Components</a>
+            <a href="https://datashe192.github.io/Mittens/Versions"><i class="fa-solid fa-code-branch"></i> Versions</a>
+            <a href="https://github.com/datashe192/Mittens/commits/0.1.0" target="_blank">Changelog</a>
+            <a href="https://github.com/datashe192/Mittens" target="_blank"><i class="fa-brands fa-github"></i> Repository</a>
+        </div>
+    </nav>
+
+    <div class="header-container">
+        <h1>Framework Architecture</h1>
+        <p class="subtitle">Explore the module tree. Click on any script to view its source code.</p>
+    </div>
+
+    <main class="explorer-container">
+        <div class="explorer-header">
+            <i class="fa-solid fa-sitemap"></i> Project Hierarchy
+        </div>
+        
+        <div class="tree-node">
+            <div class="tree-item script" onclick="openScript('mittens_standalone')">
+                <i class="fa-brands fa-lua icon-lua"></i> mittens_standalone
+            </div>
+            
+            <div class="tree-children">
+                <div class="tree-item folder">
+                    <i class="fa-solid fa-folder icon-folder"></i> lib
+                </div>
+                
+                <div class="tree-children">
+                    <div class="tree-item script" onclick="openScript('mittens')">
+                        <i class="fa-brands fa-lua icon-lua"></i> mittens
+                    </div>
+                    
+                    <div class="tree-children">
+                        <div class="tree-item script" onclick="openScript('attribution')">
+                            <i class="fa-brands fa-lua icon-lua"></i> attribution
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="script-modal" onclick="closeModal(event)">
+        <div class="modal-window" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fa-brands fa-lua icon-lua"></i> <span id="modal-filename">script.luau</span>
+                </div>
+                <button class="modal-close" onclick="closeModal(event)"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" id="modal-body-scroll">
+                <button class="copy-btn" onclick="copyCode(event)"><i class="fa-regular fa-copy"></i> Copy</button>
+                <pre id="lua-code"></pre>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/plain" id="code-mittens_standalone">
+return require(script.lib.mittens)
+    </script>
+
+    <script type="text/plain" id="code-attribution">
+print("🥊Mittens v0.1.0 by @GubSaidBye, Copyrighted Open Source MIT")
+return {}
+    </script>
+
+    <script type="text/plain" id="code-mittens">
+--!strict
+
+local RunService = game:GetService("RunService")
+
+export type Pointer = number
+
+local STRIDE = 64
+local MAX_ENTITIES = 4096
+
+local OFFSET_PARENT      = 0
+local OFFSET_X_POS       = 4
+local OFFSET_Y_POS       = 8
+local OFFSET_X_SIZE      = 12
+local OFFSET_Y_SIZE      = 16
+local OFFSET_COLOR       = 20
+local OFFSET_FLAGS       = 24
+local OFFSET_HASH        = 28
+local OFFSET_ANCHOR_X    = 32
+local OFFSET_ANCHOR_Y    = 36
+local OFFSET_TRANS       = 40
+local OFFSET_LAYOUT_PAD  = 44
+local OFFSET_LAYOUT_CFG  = 48
+local OFFSET_ASPECT      = 52
+
+local FLAG_ACTIVE        = 0b000000001
+local FLAG_DIRTY_POS     = 0b000000010
+local FLAG_DIRTY_SIZE    = 0b000000100
+local FLAG_DIRTY_COLOR   = 0b000001000
+local FLAG_MOUNTED       = 0b000010000
+local FLAG_DIRTY_ANCHOR  = 0b000100000
+local FLAG_DIRTY_TRANS   = 0b001000000
+local FLAG_DIRTY_LAYOUT  = 0b010000000
+local FLAG_DIRTY_ASPECT  = 0b100000000
+
+local MemoryHeap = buffer.create(MAX_ENTITIES * STRIDE)
+local PointerHead: Pointer = 0
+local HardwareBridge: { [Pointer]: Instance } = setmetatable({}, { __mode = "v" }) :: any
+
+local function Alloc(): Pointer
+	local ptr = PointerHead
+	PointerHead += STRIDE
+	if PointerHead >= buffer.len(MemoryHeap) then error("OUT OF MEMORY", 2) end
+	return ptr
+end
+
+require(script.attribution)
+
+local function PackColor(c: Color3): number
+	return bit32.bor(bit32.lshift(math.floor(c.R*255), 16), bit32.lshift(math.floor(c.G*255), 8), math.floor(c.B*255))
+end
+
+local function UnpackColor(packed: number): Color3
+	return Color3.fromRGB(bit32.band(bit32.rshift(packed, 16), 0xFF), bit32.band(bit32.rshift(packed, 8), 0xFF), bit32.band(packed, 0xFF))
+end
+
+local function PackLayoutConfig(fill: string?, halign: string?, valign: string?): number
+	local f = (fill == "Vertical") and 1 or 0
+	local h = (halign == "Center") and 1 or (halign == "Right") and 2 or 0
+	local v = (valign == "Center") and 1 or (valign == "Bottom") and 2 or 0
+	return bit32.bor(f, bit32.lshift(h, 1), bit32.lshift(v, 3))
+end
+
+local function HashString(str: string): number
+	local hash = 0
+	for i = 1, #str do
+		hash += string.byte(str, i)
+		hash += bit32.lshift(hash, 10)
+		hash = bit32.bxor(hash, bit32.rshift(hash, 6))
+	end
+	hash += bit32.lshift(hash, 3)
+	hash = bit32.bxor(hash, bit32.rshift(hash, 11))
+	return bit32.band(hash + bit32.lshift(hash, 15), 0xFFFFFFFF)
+end
+
+local ClassHashes = {
+	[HashString("Frame")] = "Frame",
+	[HashString("TextButton")] = "TextButton",
+	[HashString("TextLabel")] = "TextLabel",
+	[HashString("UIListLayout")] = "UIListLayout",
+	[HashString("UIAspectRatioConstraint")] = "UIAspectRatioConstraint",
+}
+
+local function VirtualCPU()
+	while true do
+		for ptr = 0, PointerHead - STRIDE, STRIDE do
+			local flags = buffer.readu32(MemoryHeap, ptr + OFFSET_FLAGS)
+			if bit32.band(flags, FLAG_ACTIVE) == 0 then continue end
+
+			local inst = HardwareBridge[ptr]
+
+			if bit32.band(flags, FLAG_MOUNTED) == 0 then
+				local hash = buffer.readu32(MemoryHeap, ptr + OFFSET_HASH)
+				inst = Instance.new(ClassHashes[hash] or "Frame")
+
+				if inst:IsA("GuiObject") then inst.BorderSizePixel = 0 end
+				HardwareBridge[ptr] = inst
+
+				local parentPtr = buffer.readu32(MemoryHeap, ptr + OFFSET_PARENT)
+				if parentPtr ~= 0xFFFFFFFF and HardwareBridge[parentPtr] then
+					inst.Parent = HardwareBridge[parentPtr]
+				end
+				flags = bit32.bor(flags, FLAG_MOUNTED)
+			end
+
+			local isGui = inst:IsA("GuiObject")
+
+			if bit32.band(flags, FLAG_DIRTY_POS) ~= 0 then
+				if isGui then (inst :: any).Position = UDim2.fromScale(buffer.readf32(MemoryHeap, ptr + OFFSET_X_POS), buffer.readf32(MemoryHeap, ptr + OFFSET_Y_POS)) end
+				flags = bit32.band(flags, bit32.bnot(FLAG_DIRTY_POS))
+			end
+
+			if bit32.band(flags, FLAG_DIRTY_SIZE) ~= 0 then
+				if isGui then (inst :: any).Size = UDim2.fromScale(buffer.readf32(MemoryHeap, ptr + OFFSET_X_SIZE), buffer.readf32(MemoryHeap, ptr + OFFSET_Y_SIZE)) end
+				flags = bit32.band(flags, bit32.bnot(FLAG_DIRTY_SIZE))
+			end
+
+			if bit32.band(flags, FLAG_DIRTY_COLOR) ~= 0 then
+				if isGui then
+					local targetProp = inst:IsA("TextLabel") and "TextColor3" or "BackgroundColor3"
+					;(inst :: any)[targetProp] = UnpackColor(buffer.readu32(MemoryHeap, ptr + OFFSET_COLOR))
+				end
+				flags = bit32.band(flags, bit32.bnot(FLAG_DIRTY_COLOR))
+			end
+
+			if bit32.band(flags, FLAG_DIRTY_ANCHOR) ~= 0 then
+				if isGui then (inst :: any).AnchorPoint = Vector2.new(buffer.readf32(MemoryHeap, ptr + OFFSET_ANCHOR_X), buffer.readf32(MemoryHeap, ptr + OFFSET_ANCHOR_Y)) end
+				flags = bit32.band(flags, bit32.bnot(FLAG_DIRTY_ANCHOR))
+			end
+
+			if bit32.band(flags, FLAG_DIRTY_TRANS) ~= 0 then
+				if isGui then (inst :: any).BackgroundTransparency = buffer.readf32(MemoryHeap, ptr + OFFSET_TRANS) end
+				flags = bit32.band(flags, bit32.bnot(FLAG_DIRTY_TRANS))
+			end
+
+			if bit32.band(flags, FLAG_DIRTY_LAYOUT) ~= 0 then
+				if inst:IsA("UIListLayout") then
+					inst.Padding = UDim.new(buffer.readf32(MemoryHeap, ptr + OFFSET_LAYOUT_PAD), 0)
+					local cfg = buffer.readu32(MemoryHeap, ptr + OFFSET_LAYOUT_CFG)
+
+					local fills = {Enum.FillDirection.Horizontal, Enum.FillDirection.Vertical}
+					local haligns = {Enum.HorizontalAlignment.Left, Enum.HorizontalAlignment.Center, Enum.HorizontalAlignment.Right}
+					local valigns = {Enum.VerticalAlignment.Top, Enum.VerticalAlignment.Center, Enum.VerticalAlignment.Bottom}
+
+					inst.FillDirection = fills[bit32.band(cfg, 1) + 1]
+					inst.HorizontalAlignment = haligns[bit32.band(bit32.rshift(cfg, 1), 3) + 1]
+					inst.VerticalAlignment = valigns[bit32.band(bit32.rshift(cfg, 3), 3) + 1]
+				end
+				flags = bit32.band(flags, bit32.bnot(FLAG_DIRTY_LAYOUT))
+			end
+
+			if bit32.band(flags, FLAG_DIRTY_ASPECT) ~= 0 then
+				if inst:IsA("UIAspectRatioConstraint") then
+					inst.AspectRatio = buffer.readf32(MemoryHeap, ptr + OFFSET_ASPECT)
+				end
+				flags = bit32.band(flags, bit32.bnot(FLAG_DIRTY_ASPECT))
+			end
+
+			buffer.writeu32(MemoryHeap, ptr + OFFSET_FLAGS, flags)
+		end
+		coroutine.yield()
+	end
+end
+
+local CPU_Thread = coroutine.create(VirtualCPU)
+RunService.RenderStepped:Connect(function()
+	if coroutine.status(CPU_Thread) == "suspended" then coroutine.resume(CPU_Thread) end
+end)
+
+local function MutateFlag(ptr: Pointer, flag: number)
+	buffer.writeu32(MemoryHeap, ptr + OFFSET_FLAGS, bit32.bor(buffer.readu32(MemoryHeap, ptr + OFFSET_FLAGS), flag))
+end
+
+local function WritePosition(ptr: Pointer, x: number, y: number)
+	buffer.writef32(MemoryHeap, ptr + OFFSET_X_POS, x); buffer.writef32(MemoryHeap, ptr + OFFSET_Y_POS, y); MutateFlag(ptr, FLAG_DIRTY_POS)
+end
+local function WriteSize(ptr: Pointer, w: number, h: number)
+	buffer.writef32(MemoryHeap, ptr + OFFSET_X_SIZE, w); buffer.writef32(MemoryHeap, ptr + OFFSET_Y_SIZE, h); MutateFlag(ptr, FLAG_DIRTY_SIZE)
+end
+local function WriteColor(ptr: Pointer, c: Color3)
+	buffer.writeu32(MemoryHeap, ptr + OFFSET_COLOR, PackColor(c)); MutateFlag(ptr, FLAG_DIRTY_COLOR)
+end
+local function WriteAnchor(ptr: Pointer, ax: number, ay: number)
+	buffer.writef32(MemoryHeap, ptr + OFFSET_ANCHOR_X, ax); buffer.writef32(MemoryHeap, ptr + OFFSET_ANCHOR_Y, ay); MutateFlag(ptr, FLAG_DIRTY_ANCHOR)
+end
+local function WriteTransparency(ptr: Pointer, t: number)
+	buffer.writef32(MemoryHeap, ptr + OFFSET_TRANS, t); MutateFlag(ptr, FLAG_DIRTY_TRANS)
+end
+local function WriteLayout(ptr: Pointer, pad: number, cfg: number)
+	buffer.writef32(MemoryHeap, ptr + OFFSET_LAYOUT_PAD, pad); buffer.writeu32(MemoryHeap, ptr + OFFSET_LAYOUT_CFG, cfg); MutateFlag(ptr, FLAG_DIRTY_LAYOUT)
+end
+local function WriteAspect(ptr: Pointer, ratio: number)
+	buffer.writef32(MemoryHeap, ptr + OFFSET_ASPECT, ratio); MutateFlag(ptr, FLAG_DIRTY_ASPECT)
+end
+
+export type Props = {
+	Position: {number}?, Size: {number}?, AnchorPoint: {number}?,
+	Transparency: number?, Color: Color3?, Text: string?,
+	Padding: number?, FillDirection: string?, HorizontalAlignment: string?, 
+	VerticalAlignment: string?, AspectRatio: number?
+}
+
+export type VirtualNode = {
+	Ptr: Pointer,
+	GetHardware: () -> Instance?
+}
+
+local function Construct(className: string)
+	return function(props: Props)
+		return function(parentPtr: Pointer?): VirtualNode
+			local ptr = Alloc()
+
+			local initialFlags = bit32.bor(FLAG_ACTIVE, FLAG_DIRTY_POS, FLAG_DIRTY_SIZE, FLAG_DIRTY_COLOR, FLAG_DIRTY_ANCHOR, FLAG_DIRTY_TRANS, FLAG_DIRTY_LAYOUT, FLAG_DIRTY_ASPECT)
+			buffer.writeu32(MemoryHeap, ptr + OFFSET_HASH, HashString(className))
+			buffer.writeu32(MemoryHeap, ptr + OFFSET_PARENT, parentPtr or 0xFFFFFFFF)
+			buffer.writeu32(MemoryHeap, ptr + OFFSET_FLAGS, initialFlags)
+
+			WritePosition(ptr, props.Position and props.Position[1] or 0, props.Position and props.Position[2] or 0)
+			WriteSize(ptr, props.Size and props.Size[1] or 1, props.Size and props.Size[2] or 1)
+			WriteColor(ptr, props.Color or Color3.new(1, 1, 1))
+			WriteAnchor(ptr, props.AnchorPoint and props.AnchorPoint[1] or 0, props.AnchorPoint and props.AnchorPoint[2] or 0)
+			WriteTransparency(ptr, props.Transparency or 0)
+
+			WriteLayout(ptr, props.Padding or 0, PackLayoutConfig(props.FillDirection, props.HorizontalAlignment, props.VerticalAlignment))
+			WriteAspect(ptr, props.AspectRatio or 1)
+
+			local node: VirtualNode = { Ptr = ptr, GetHardware = function() return HardwareBridge[ptr] end }
+
+			task.spawn(function()
+				local inst = HardwareBridge[ptr]
+				while not inst do task.wait(); inst = HardwareBridge[ptr] end
+
+				if props.Text and (inst:IsA("TextLabel") or inst:IsA("TextButton")) then
+					(inst :: any).Text = props.Text
+					;(inst :: any).TextScaled = true
+					if inst:IsA("TextLabel") and props.Transparency == nil then inst.BackgroundTransparency = 1 end
+				end
+			end)
+
+			return node
+		end
+	end
+end
+
+local MittensAPI = {
+	Frame = Construct("Frame"),
+	Button = Construct("TextButton"),
+	Label = Construct("TextLabel"),
+	List = Construct("UIListLayout"),
+	AspectRatio = Construct("UIAspectRatioConstraint"),
+
+	MountToScreen = function(node: VirtualNode, screenGui: ScreenGui)
+		task.spawn(function()
+			local inst = node.GetHardware()
+			while not inst do task.wait(); inst = node.GetHardware() end
+			(inst :: any).Parent = screenGui
+		end)
+	end
+}
+
+local SecurityProxy = newproxy(true)
+local mt = getmetatable(SecurityProxy)
+mt.__index = MittensAPI
+mt.__newindex = function() error("Segmentation Fault. Core Dumped.", 2) end
+mt.__tostring = function() return `Mittens Core [HEAP ALLOC: {buffer.len(MemoryHeap)} BYTES]` end
+mt.__metatable = "ENCRYPTED"
+
+return SecurityProxy
+    </script>
+
+    <script>
+        // --- SYNTAX HIGHLIGHTER ---
+        function highlightLuau(rawText) {
+            let escaped = rawText.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            let highlighted = escaped
+                .replace(/(--.*)/g, '<span class="cm">$1</span>')
+                .replace(/(["'])(?:(?=(\\?))\2.)*?\1/g, '<span class="str">$&</span>')
+                .replace(/\b(local|function|return|if|then|end|for|while|continue|error|export|type|nil|true|false|and|or|not)\b/g, '<span class="kw">$1</span>')
+                .replace(/\b(Instance|game|math|buffer|bit32|Color3|Vector2|UDim2|UDim|Enum|coroutine|task|string|setmetatable|require|newproxy|getmetatable|print)\b/g, '<span class="cls">$1</span>')
+                .replace(/:([a-zA-Z_]\w*)/g, ':<span class="fn">$1</span>')
+                .replace(/\b(0[xX][0-9a-fA-F]+|0[bB][01]+|\d+(?:\.\d+)?)\b/g, '<span class="num">$1</span>');
+
+            const lines = highlighted.split('\n');
+            if(lines[0].trim() === "") lines.shift();
+            if(lines.length > 0 && lines[lines.length-1].trim() === "") lines.pop();
+
+            return lines.map((line, i) => `<span class="line" data-line="${i + 1}">${line}</span>`).join('\n');
+        }
+
+        // --- MODAL LOGIC ---
+        const modal = document.getElementById('script-modal');
+        const codeContainer = document.getElementById('lua-code');
+        const modalTitle = document.getElementById('modal-filename');
+        const scrollBox = document.getElementById('modal-body-scroll');
+
+        function openScript(scriptName) {
+            // Fetch raw code from script tags
+            const rawCode = document.getElementById(`code-${scriptName}`).textContent;
+            
+            // Highlight and inject
+            codeContainer.innerHTML = highlightLuau(rawCode);
+            modalTitle.innerText = scriptName;
+            
+            // Show modal & Reset Scroll
+            modal.style.display = 'flex';
+            scrollBox.scrollTop = 0;
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function closeModal(event) {
+            if (event) event.stopPropagation();
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restore background scrolling
+        }
+
+        // Close on escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape" && modal.style.display === "flex") {
+                closeModal();
+            }
+        });
+
+        // --- COPY LOGIC ---
+        function copyCode(event) {
+            const lines = document.querySelectorAll('#lua-code .line');
+            let rawCode = '';
+            lines.forEach(line => { rawCode += line.textContent + '\n'; });
+            
+            navigator.clipboard.writeText(rawCode).then(() => {
+                const btn = event.currentTarget;
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+                btn.style.background = 'var(--cyan)';
+                btn.style.color = '#000';
+                btn.style.borderColor = 'var(--cyan)';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.style.background = '';
+                    btn.style.color = '';
+                    btn.style.borderColor = '';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
